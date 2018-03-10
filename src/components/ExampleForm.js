@@ -1,5 +1,5 @@
 import React from 'react';
-import {Field, FieldArray, FormStatus, Form} from 'redux-formkit';
+import {Field, FieldArray, FormStatus, Formkit} from 'redux-formkit';
 
 import './ExampleForm.css';
 
@@ -52,15 +52,15 @@ const RadioButton = props => {
 };
 
 const Cbox = props => (
-  <Field name={props.name} component={Checkbox} label={props.label} fieldWrapper={props.fieldWrapper} />
+  <Field name={props.name} component={Checkbox} label={props.label} form={props.form} />
 );
 
 const Rbox = props => (
-  <Field name={props.name} radioValue={props.rvalue} component={RadioButton} label={props.label} fieldWrapper={props.fieldWrapper} />
+  <Field name={props.name} radioValue={props.rvalue} component={RadioButton} label={props.label} form={props.form} />
 );
 
 
-const renderHobbies = ({fieldWrapper, fields, error}) => (
+const renderHobbies = ({form, fields, error}) => (
   <ul>
     fields: {JSON.stringify(fields)}
     <li>
@@ -75,7 +75,7 @@ const renderHobbies = ({fieldWrapper, fields, error}) => (
         />
         hobby: {JSON.stringify(hobby)}
         <Field
-          fieldWrapper={fieldWrapper}
+          form={form}
           name={`${hobby}.description`}
           type="text"
           component={Input}
@@ -106,7 +106,7 @@ const ExampleForm = (props) => (
           <label htmlFor="f1" className="example-form_field-label">
             First Field
           </label>
-          <Field name="field1" onValidate={validateF2} fieldWrapper={props.fieldWrapper} validate={requiredMaxLength1}>
+          <Field name="field1" onValidate={validateF2} form={props.form} validate={requiredMaxLength1}>
             {renderInput}
           </Field>
         </li>
@@ -114,29 +114,29 @@ const ExampleForm = (props) => (
           <label htmlFor="f2" className="example-form_field-label">
             Second Field
           </label>
-          <Field name="field2" component={Input} fieldWrapper={props.fieldWrapper} validate={greaterThanField1}/>
+          <Field name="field2" component={Input} form={props.form} validate={greaterThanField1}/>
         </li>
         <li className="example-form_item">
           <label htmlFor="cb1" className="example-form_field-label">
             Is Agreed?
           </label>
-          <Field name="cb1" component={Checkbox} fieldWrapper={props.fieldWrapper} />
-          <Cbox name="cb2" label="is CB2?" fieldWrapper={props.fieldWrapper} />
-          <Rbox name="rb2" label="Red" rvalue="R" fieldWrapper={props.fieldWrapper} />
-          <Rbox name="rb2" label="Green" rvalue="G" fieldWrapper={props.fieldWrapper} />
-          <Rbox name="rb2" label="Blue" rvalue="B" fieldWrapper={props.fieldWrapper} />
+          <Field name="cb1" component={Checkbox} form={props.form} />
+          <Cbox name="cb2" label="is CB2?" form={props.form} />
+          <Rbox name="rb2" label="Red" rvalue="R" form={props.form} />
+          <Rbox name="rb2" label="Green" rvalue="G" form={props.form} />
+          <Rbox name="rb2" label="Blue" rvalue="B" form={props.form} />
         </li>
         <li className="example-form_item">
           <label htmlFor="f3" className="example-form_field-label">
             Third Field
           </label>
-          {props.status==='a'? <Field name="field3" fieldWrapper={props.fieldWrapper} validate={[maxLength5, required]} placeholder="place it" component={Input}/>: 'ggg'}
+          {props.status==='a'? <Field name="field3" form={props.form} validate={[maxLength5, required]} placeholder="place it" component={Input}/>: 'ggg'}
         </li>
         <li className="example-form_item">
-          <FormStatus fieldWrapper={props.fieldWrapper}>
+          <FormStatus form={props.form}>
             {({isValid, errorCount}) => {
               return(
-                <button onClick={props.fieldWrapper.submit} className="example-form_button" disabled={false}>
+                <button onClick={props.form.submit} className="example-form_button" disabled={false}>
                   Send {isValid? 'Ok': 'Not OK'} {errorCount + '.'}
                 </button>
               )
@@ -148,7 +148,7 @@ const ExampleForm = (props) => (
     <div>
       <label>Last Name</label>
       <Field
-        fieldWrapper={props.fieldWrapper}
+        form={props.form}
         name="lastName"
         component={Input}
         type="text"
@@ -159,7 +159,7 @@ const ExampleForm = (props) => (
     <div>
       <label>Hob</label>
       <Field
-        fieldWrapper={props.fieldWrapper}
+        form={props.form}
         name="hob"
         component={Input}
         type="text"
@@ -170,7 +170,7 @@ const ExampleForm = (props) => (
     <div>
       <label>Hobbies</label>
       <FieldArray
-        fieldWrapper={props.fieldWrapper}
+        form={props.form}
         name="hobbies"
         component={renderHobbies}
       />
@@ -180,6 +180,6 @@ const ExampleForm = (props) => (
 
 const validate = values => {console.log("validate", values);}
 
-export default Form(ExampleForm, 'exampleF', validate);
+export default Formkit(ExampleForm, 'exampleF', validate);
 
 
