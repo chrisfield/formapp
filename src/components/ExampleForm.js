@@ -4,10 +4,16 @@ import {Field, FieldArray, FormStatus, Formkit} from 'redux-formkit';
 import './ExampleForm.css';
 
 const upper = str => str.toUpperCase();
-const number = str => parseInt(str.replace(/[^\d.-]/g, ""), 10);
+const number = str => {
+  const result = parseInt(str.replace(/[^\d.-]/g, ""), 10);;
+  return result;
+}
 const addCommas = number => {
+  if (number === 0) {
+    return '0';
+  }
   if (!number) {
-    return number;
+    return '';
   }
   return number.toLocaleString();
 };
@@ -23,6 +29,14 @@ const maxLength1 = value => (
 const required = value => (
   value.trim && value.trim().length > 0 ? undefined: 'required'
 );
+
+const requiredNum = value => {
+  if (isNaN(value)) {
+    return 'required';
+  }
+  return undefined;
+};
+
 
 const greaterThanField1 = (value, values) => (
   values && value > values.field1? undefined: 'greaterThanField1'
@@ -168,10 +182,11 @@ const ExampleForm = (props) => (
       <Field
         form={props.form}
         name="theNumber"
-        component="input"
+        component={Input}
         type="text"
         format={number}
         formatFromStore={addCommas}
+        validate={requiredNum}
       />
     </div>
     <div>
@@ -179,7 +194,7 @@ const ExampleForm = (props) => (
       <Field
         form={props.form}
         name="hob"
-        component={Input}
+        component="input"
         type="text"
         format={upper}
       />
