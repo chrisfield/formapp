@@ -10,14 +10,11 @@ import {updateFields} from 'redux-formkit';
 store.dispatch(updateFields('exampleF', {
   hobbies: [
     {},
-    {description: 'stamp collecting'},
-    {},
-    {description: 'painting'},
-    {}
+    {description: 'stamp collecting'}
   ],
-  field1: 'd',
-  field2: 'c',
-  cb2: true,
+  field1: 'One',
+  field2: 'Another',
+  isAgreed: true,
   rb2: 'G',
 }));
 

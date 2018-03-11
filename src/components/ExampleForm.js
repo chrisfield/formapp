@@ -22,9 +22,6 @@ const maxLength5 = (value, values) => (
   value.trim && value.trim().length > 5 ? 'maxLength': undefined
 );
 
-const maxLength1 = value => (
-  value.trim && value.trim().length > 1 ? 'maxLength': undefined
-);
 
 const required = value => (
   value.trim && value.trim().length > 0 ? undefined: 'required'
@@ -47,18 +44,20 @@ const validateF2 = form => {
   field2.validateValue(field2.props.value)
 }
 
-const requiredMaxLength1 = [required, maxLength1];
-
 const Input = props => (
-   <div>
-     {props.label}
+   <div className="example-form_item">
+     <label htmlFor={props.name} className="example-form_field-label">{props.label}</label>
      <input placeholder={props.placeholder} value={props.value} onChange={props.update} onBlur={props.validate}/>
      {props.error && props.touched && <p>{props.error}</p>}
    </div>
 );
 
+const InputField = props => (
+  <Field component={Input} {...props} />
+);
+
 const Checkbox = props => (
-  <div>
+  <div className="example-form_item">
     <label htmlFor={props.name}>{props.label}</label>
     <input id={props.name} type="checkbox" checked={props.value} onChange={props.update}/>
   </div>
@@ -67,7 +66,7 @@ const Checkbox = props => (
 const RadioButton = props => {
   const id = `${props.name}-${props.radioValue}`;
   return (
-     <div>
+     <div className="example-form_item">
       <label htmlFor={id}>{props.label}</label>
       <input id={id} type="radio" value={props.radioValue} checked={props.radioValue===props.value} onChange={props.update}/>
     </div>
@@ -85,7 +84,6 @@ const Rbox = props => (
 
 const renderHobbies = ({form, fields, error}) => (
   <ul>
-    fields: {JSON.stringify(fields)}
     <li>
       <button type="button" onClick={() => fields.push()}>Add Hobby</button>
     </li>
@@ -95,7 +93,7 @@ const renderHobbies = ({form, fields, error}) => (
           type="button"
           title="Remove Hobby"
           onClick={() => fields.remove(index)}
-        />
+        >-</button>
         hobby: {JSON.stringify(hobby)}
         <Field
           form={form}
@@ -109,13 +107,6 @@ const renderHobbies = ({form, fields, error}) => (
     ))}
     {error && <li className="error">{error}</li>}
   </ul>
-)
-
-const renderInput = ({update, validate, value, error, touched}) => (
-  <div>
-    <input id="f1" className="example-form_input" value={value} onChange={update} onBlur={validate} />
-    {error && touched && <p>{error}</p>}
-  </div>
 );
 
 const ExampleForm = (props) => (
@@ -124,81 +115,51 @@ const ExampleForm = (props) => (
       <legend className="example-form_title">
         Example form
       </legend>
-      <ul className="example-form_items">
-        <li className="example-form_item">
-          <label htmlFor="f1" className="example-form_field-label">
-            First Field
-          </label>
-          <Field name="field1" onValidate={validateF2} form={props.form} validate={requiredMaxLength1}>
-            {renderInput}
-          </Field>
-        </li>
-        <li className="example-form_item">
-          <label htmlFor="f2" className="example-form_field-label">
-            Second Field
-          </label>
-          <Field name="field2" component={Input} form={props.form} validate={greaterThanField1}/>
-        </li>
-        <li className="example-form_item">
-          <label htmlFor="cb1" className="example-form_field-label">
-            Is Agreed?
-          </label>
-          <Field name="cb1" component={Checkbox} form={props.form} />
-          <Cbox name="cb2" label="is CB2?" form={props.form} />
+      <div className="example-form_items">
+        <InputField label="First Field" name="field1" onValidate={validateF2} form={props.form} validate={[required, maxLength5]} />
+
+        <InputField label="2nd Field > 1st field" name="field2" form={props.form} validate={greaterThanField1}/>
+        <Field label="isAgreed" name="isAgreed" component={Checkbox} form={props.form} />
+        <Cbox name="isAdditionalField" label="Is Additional Field?" form={props.form} />
+        {  
+          props.form.fieldValues().isAdditionalField 
+          && <Field component="input" name="additionalField" placeholder="Additional field" form={props.form}/>
+        }
+        <div className="example-form_item">
           <Rbox name="rb2" label="Red" rvalue="R" form={props.form} />
           <Rbox name="rb2" label="Green" rvalue="G" form={props.form} />
           <Rbox name="rb2" label="Blue" rvalue="B" form={props.form} />
-        </li>
-        <li className="example-form_item">
-          <label htmlFor="f3" className="example-form_field-label">
-            Third Field
-          </label>
-          {props.status==='a'? <Field name="field3" form={props.form} validate={[maxLength5, required]} placeholder="place it" component={Input}/>: 'ggg'}
-        </li>
-        <li className="example-form_item">
+        </div>
+        <InputField
+          label="Numeric Field"
+          form={props.form}
+          name="theNumber"
+          format={number}
+          formatFromStore={addCommas}
+          validate={requiredNum}
+        />
+        <InputField
+          label="Uppercase Field"
+          form={props.form}
+          name="hob"
+          type="text"
+          format={upper}
+        />
+
+        <div className="example-form_item">
           <FormStatus form={props.form}>
             {({isValid, errorCount}) => {
               return(
                 <button onClick={props.form.submit} className="example-form_button" disabled={false}>
-                  Send {isValid? 'Ok': 'Not OK'} {errorCount + '.'}
+                  Send {isValid? ':)': `(Todo: ${errorCount})`}
                 </button>
               )
             }}
           </FormStatus>
-        </li>
-       </ul>
+        </div>
+       </div>
       </fieldset>
-    <div>
-      <label>Last Name</label>
-      <Field
-        form={props.form}
-        name="lastName"
-        component={Input}
-        type="text"
-        validate={required}
-        placeholder="Last Name"
-      />
-      <label>Numeric Field</label>
-      <Field
-        form={props.form}
-        name="theNumber"
-        component={Input}
-        type="text"
-        format={number}
-        formatFromStore={addCommas}
-        validate={requiredNum}
-      />
-    </div>
-    <div>
-      <label>Uppercase Field</label>
-      <Field
-        form={props.form}
-        name="hob"
-        component="input"
-        type="text"
-        format={upper}
-      />
-    </div>
+
     <div>
       <label>Hobbies</label>
       <FieldArray
