@@ -3,6 +3,15 @@ import {Field, FieldArray, FormStatus, Formkit} from 'redux-formkit';
 
 import './ExampleForm.css';
 
+const upper = str => str.toUpperCase();
+const number = str => parseInt(str.replace(/[^\d.-]/g, ""), 10);
+const addCommas = number => {
+  if (!number) {
+    return number;
+  }
+  return number.toLocaleString();
+};
+
 const maxLength5 = (value, values) => (
   value.trim && value.trim().length > 5 ? 'maxLength': undefined
 );
@@ -155,16 +164,24 @@ const ExampleForm = (props) => (
         validate={required}
         placeholder="Last Name"
       />
+      <label>Numeric Field</label>
+      <Field
+        form={props.form}
+        name="theNumber"
+        component="input"
+        type="text"
+        format={number}
+        formatFromStore={addCommas}
+      />
     </div>
     <div>
-      <label>Hob</label>
+      <label>Uppercase Field</label>
       <Field
         form={props.form}
         name="hob"
         component={Input}
         type="text"
-        validate={required}
-        placeholder="eg. Stamp Collecting"
+        format={upper}
       />
     </div>
     <div>
