@@ -6,24 +6,33 @@ import './ExampleForm.css';
 
 const ExampleForm = (props) => (
   <form className="example-form">
-    <fieldset>
-      <legend className="example-form_title">
-        Example form
-      </legend>
-      <div className="example-form_items">
-        <InputField label="First Field" name="field1" onValidate={validateF2} form={props.form} validate={[requiredStr, maxLength5]} />
+    <div className="example-form_items">
+      <fieldset className="example-form_items">
+        <legend className="example-form_title">
+          Example form
+        </legend>
+        <InputField
+          label="First Field"
+          name="field1"
+          onValidate={validateF2}
+          form={props.form}
+          validate={[requiredStr, maxLength5]}
+        />
 
         <InputField label="2nd Field > 1st field" name="field2" form={props.form} validate={greaterThanField1}/>
-        <Field label="isAgreed" name="isAgreed" component={Checkbox} form={props.form} />
-        <CheckboxField name="isAdditionalField" label="Is Additional Field?" form={props.form} />
-        {  
-          props.form.fieldValues().isAdditionalField 
-          && <Field component="input" name="additionalField" placeholder="Additional field" form={props.form}/>
-        }
-        <div className="example-form_item">
-          <RadioField name="rb2" label="Red" rvalue="R" form={props.form} />
-          <RadioField name="rb2" label="Green" rvalue="G" form={props.form} />
-          <RadioField name="rb2" label="Blue" rvalue="B" form={props.form} />
+        <div className="example-form_item_group">
+          <Field label="isAgreed" name="isAgreed" component={Checkbox} form={props.form} />
+          <CheckboxField name="isAdditionalField" label="Is Additional Field?" form={props.form} />
+          {  
+            props.form.fieldValues().isAdditionalField 
+            && <Field component="input" name="additionalField" placeholder="Additional field" form={props.form}/>
+          }
+        </div>
+        
+        <div className="example-form_item_group">
+          <RadioField name="rb2" label="Red" value="R" form={props.form} />
+          <RadioField name="rb2" label="Green" value="G" form={props.form} />
+          <RadioField name="rb2" label="Blue" value="B" form={props.form} />
         </div>
         <InputField
           label="Numeric Field"
@@ -37,58 +46,56 @@ const ExampleForm = (props) => (
           label="Uppercase Field"
           form={props.form}
           name="hob"
-          type="text"
           format={upper}
         />
-
-        <div className="example-form_item">
-          <FormStatus form={props.form}>
-            {({isValid, errorCount}) => {
-              return(
-                <button onClick={props.form.submit} className="example-form_button" disabled={false}>
-                  Send {isValid? ':)': `(Todo: ${errorCount})`}
-                </button>
-              )
-            }}
-          </FormStatus>
-        </div>
-       </div>
-      </fieldset>
-
-    <div>
-      <label>Hobbies</label>
+      </fieldset>  
       <FieldArray
         form={props.form}
         name="hobbies"
         component={renderHobbies}
-      />
+      />                
+      <div className="example-form_item">
+        <FormStatus form={props.form}>
+          {({isValid, errorCount}) => {
+            return(
+              <button 
+                onClick={props.form.submit} 
+                className={`example-form_button ${isValid? 'example-form_button-valid': ''}`} 
+              >
+                Send {isValid? ':)': `(Todo: ${errorCount})`}
+              </button>
+            )
+          }}
+        </FormStatus>
+      </div>
     </div>
   </form>  
 );
 
 
-const renderHobbies = ({form, fields, error}) => (
-  <div>
+const renderHobbies = ({form, fields}) => (
+  <fieldset>
+    <legend className="example-form_title">
+      Hobbies
+    </legend>
     <button type="button" onClick={() => fields.push()}>Add Hobby</button>
-    {fields.map((hobby, index) => (
-      <div key={hobby}>
-        <InputField
-          form={form}
-          name={`${hobby}.description`}
-          type="text"
-          validate={requiredStr}
-          label={`Hobby #${index + 1}`}
-        >
-          <button
-            type="button"
-            title="Remove Hobby"
-            onClick={() => fields.remove(index)}
-          >-</button>
-        </InputField>
-      </div>
-    ))}
-    {error && <li className="error">{error}</li>}
-  </div>
+    <div className="example-form_items">
+      {fields.map((hobby, index) => (
+        <div key={hobby}>
+          <InputField
+            key={hobby}
+            form={form}
+            name={`${hobby}.description`}
+            validate={requiredStr}
+            label={`Hobby #${index + 1}`}
+          >
+            <button type="button" title="Remove Hobby" onClick={() => fields.remove(index)}>-</button>
+          </InputField>
+          {/*Can add more fields here*/}
+        </div>
+      ))}
+    </div>
+  </fieldset>
 );
 
 
@@ -147,7 +154,13 @@ const requiredNum = value => {
 const Input = props => (
    <div className="example-form_item">
      <label htmlFor={props.name} className="example-form_field-label">{props.label}</label>
-     <input placeholder={props.placeholder} value={props.value} onChange={props.update} onBlur={props.validate}/>
+     <input 
+       id={props.name} 
+       type={props.type? props.type: 'text'} 
+       placeholder={props.placeholder} 
+       value={props.value} 
+       onChange={props.update} 
+       onBlur={props.validate}/>
      {props.children}
      {props.error && props.touched && <p>{props.error}</p>}
    </div>
@@ -179,7 +192,7 @@ const CheckboxField = props => (
 );
 
 const RadioField = props => (
-  <Field name={props.name} radioValue={props.rvalue} component={RadioButton} label={props.label} form={props.form} />
+  <Field name={props.name} radioValue={props.value} component={RadioButton} label={props.label} form={props.form} />
 );
 
 

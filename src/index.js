@@ -12,10 +12,9 @@ store.dispatch(updateFields('exampleF', {
     {},
     {description: 'stamp collecting'}
   ],
-  field1: 'One',
-  field2: 'Another',
+  theNumber: 42,
   isAgreed: true,
-  rb2: 'G',
+  rb2: 'G'
 }));
 
 ReactDOM.render(
