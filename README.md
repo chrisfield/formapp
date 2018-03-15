@@ -1,6 +1,6 @@
-# Example forms built using redux-formkit
+# Example forms built with  [redux-formkit](https://github.com/chrisfield/redux-formkit)
 
-The example form contains text, checkbox and radio inputs and a field-array with add/remove buttons. It has field and inter-field valiation and shows the current valid status. It's the one I made up while doing the initial dev work for [redux-formkit](https://github.com/chrisfield/redux-formkit). I intend to replace with purpose built examples.
+This [example form](https://github.com/chrisfield/formapp/blob/master/src/components/ExampleForm.js) contains text fields, a numeric field, checkbox and radio inputs and a field-array with add/remove buttons. It has field and inter-field valiation, shows the current error count and the submit button goes green when the form is valid.
 
 ## Getting Started
 
