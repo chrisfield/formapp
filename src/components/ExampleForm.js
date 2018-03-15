@@ -21,7 +21,7 @@ const ExampleForm = (props) => (
 
         <InputField label="2nd Field > 1st field" name="field2" form={props.form} validate={greaterThanField1}/>
         <div className="example-form_item_group">
-          <Field label="isAgreed" name="isAgreed" component={Checkbox} form={props.form} />
+          <CheckboxField name="isAgreed" label="isAgreed" form={props.form} />
           <CheckboxField name="isAdditionalField" label="Is Additional Field?" form={props.form} />
           {  
             props.form.fieldValues().isAdditionalField 
@@ -35,20 +35,21 @@ const ExampleForm = (props) => (
           <RadioField name="rb2" label="Blue" value="B" form={props.form} />
         </div>
         <InputField
+          name="theNumber"
           label="Numeric Field"
           form={props.form}
-          name="theNumber"
           format={number}
           formatFromStore={addCommas}
           validate={requiredNum}
         />
         <InputField
+          name="capitals"
           label="Uppercase Field"
           form={props.form}
-          name="hob"
           format={upper}
         />
-      </fieldset>  
+      </fieldset>
+      
       <FieldArray
         form={props.form}
         name="hobbies"
@@ -101,25 +102,36 @@ const renderHobbies = ({form, fields}) => (
 
 const validateF2 = form => {
   const field2 = form.getField('field2');
-  field2.validateValue(field2.props.value)
+  field2.validateValue(field2.props.value);
 };
 
 const greaterThanField1 = (value, values) => (
   values && value > values.field1? undefined: 'greaterThanField1'
 );
 
-
-const formLevelValidation = values => {
-  console.log("validate", values);
-  return true;
+const submitTheValues = values => {
+  alert("submit" + JSON.stringify(values));
 };
 
-export default Formkit(ExampleForm, 'exampleF', formLevelValidation);
+const initialValues = {
+  hobbies: [
+    {},
+    {description: 'stamp collecting'}
+  ],
+  theNumber: 42,
+  isAgreed: true,
+  rb2: 'G'
+};
+
+export default Formkit(ExampleForm, 'exampleF', {
+  initialValues: initialValues,
+  submit: submitTheValues
+});
 
 
 
 /*
-  The following functions would normally be imported from separate files and reused accross a project 
+  The following functions would normally be imported from separate files and reused across a project 
 */
 const upper = str => str.toUpperCase();
 const number = str => parseInt(str.replace(/[^\d.-]/g, ""), 10);
@@ -135,16 +147,16 @@ const addCommas = number => {
 };
 
 const maxLength5 = (value, values) => (
-  value.trim && value.trim().length > 5 ? 'maxLength': undefined
+  value && value.trim && value.trim().length > 5 ? 'maxLength': undefined
 );
 
 
-const requiredStr = value => (
-  value.trim && value.trim().length > 0 ? undefined: 'required'
-);
+const requiredStr = value => {
+  return value && value.trim && value.trim().length > 0 ? undefined: 'required'
+};
 
 const requiredNum = value => {
-  if (isNaN(value)) {
+  if (value === null || isNaN(value)) {
     return 'required';
   }
   return undefined;
