@@ -6,70 +6,68 @@ import './ExampleForm.css';
 
 const ExampleForm = (props) => (
   <form className="example-form">
-    <div className="example-form_items">
-      <fieldset className="example-form_items">
-        <legend className="example-form_title">
-          Example form
-        </legend>
-        <InputField
-          label="First Field"
-          name="field1"
-          onChange={form => (form.getField('field2').revalidate())}
-          form={props.form}
-          validate={[requiredStr, maxLength5]}
-        />
-
-        <InputField label="2nd Field > 1st field" name="field2" form={props.form} validate={greaterThanField1}/>
-        <div className="example-form_item_group">
-          <CheckboxField name="isAgreed" label="Can the server have a number bigger than 42?" form={props.form} onChange={form => (form.getField('theNumber').revalidate())}/>
-          <CheckboxField name="isAdditionalField" label="Is Additional Field?" form={props.form} />
-          {  
-            props.form.fieldValues().isAdditionalField 
-            && <Field component="input" name="additionalField" placeholder="Additional field" form={props.form}/>
-          }
-        </div>
-        
-        <div className="example-form_item_group">
-          <RadioField name="rb2" label="Red" value="R" form={props.form} />
-          <RadioField name="rb2" label="Green" value="G" form={props.form} />
-          <RadioField name="rb2" label="Blue" value="B" form={props.form} />
-        </div>
-        <InputField
-          name="theNumber"
-          label="Numeric Field"
-          form={props.form}
-          format={number}
-          formatFromStore={addCommas}
-          validate={requiredNum}
-        />
-        <InputField
-          name="capitals"
-          label="Uppercase Field"
-          form={props.form}
-          format={upper}
-        />
-      </fieldset>
-      
-      <FieldArray
+    <fieldset>
+      <legend className="example-form_title">
+        Example form
+      </legend>
+      <InputField
+        label="First Field"
+        name="field1"
+        onChange={form => (form.getField('field2').revalidate())}
         form={props.form}
-        name="hobbies"
-        component={renderHobbies}
+        validate={[requiredStr, maxLength5]}
       />
-      <FormErrorSection name="formError" form={props.form}/>
-      <div className="example-form_item">
-        <FormStatus form={props.form}>
-          {({isValid, errorCount}) => {
-            return(
-              <button 
-                onClick={props.form.handleSubmit} 
-                className={`example-form_button ${isValid? 'example-form_button-valid': ''}`} 
-              >
-                Send {isValid? ':)': `(Todo: ${errorCount})`}
-              </button>
-            )
-          }}
-        </FormStatus>
+
+      <InputField label="2nd Field > 1st field" name="field2" form={props.form} validate={greaterThanField1}/>
+      <div className="example-form_item_group">
+        <CheckboxField name="isAgreed" label="Can the server have a number bigger than 42?" form={props.form} onChange={form => (form.getField('theNumber').revalidate())}/>
+        <CheckboxField name="isAdditionalField" label="Is Additional Field?" form={props.form} />
+        {  
+          props.form.fieldValues().isAdditionalField 
+          && <Field component="input" name="additionalField" placeholder="Additional field" form={props.form}/>
+        }
       </div>
+      
+      <div className="example-form_item_group">
+        <RadioField name="rb2" label="Red" value="R" form={props.form} />
+        <RadioField name="rb2" label="Green" value="G" form={props.form} />
+        <RadioField name="rb2" label="Blue" value="B" form={props.form} />
+      </div>
+      <InputField
+        name="theNumber"
+        label="Numeric Field"
+        form={props.form}
+        format={number}
+        formatFromStore={addCommas}
+        validate={requiredNum}
+      />
+      <InputField
+        name="capitals"
+        label="Uppercase Field"
+        form={props.form}
+        format={upper}
+      />
+    </fieldset>
+    
+    <FieldArray
+      form={props.form}
+      name="hobbies"
+      component={renderHobbies}
+    />
+    <FormErrorSection name="formError" form={props.form}/>
+    <div className="example-form_item">
+      <FormStatus form={props.form}>
+        {({isValid, errorCount}) => {
+          return(
+            <button 
+              onClick={props.form.handleSubmit} 
+              className={`example-form_button ${isValid? 'example-form_button-valid': ''}`} 
+            >
+              Send {isValid? ':)': `(Todo: ${errorCount})`}
+            </button>
+          )
+        }}
+      </FormStatus>
     </div>
   </form>  
 );
@@ -81,22 +79,20 @@ const renderHobbies = ({form, fields}) => (
       Hobbies
     </legend>
     <button type="button" onClick={() => fields.push()}>Add Hobby</button>
-    <div className="example-form_items">
-      {fields.map((hobby, index) => (
-        <div key={hobby}>
-          <InputField
-            key={hobby}
-            form={form}
-            name={`${hobby}.description`}
-            validate={requiredStr}
-            label={`Hobby #${index + 1}`}
-          >
-            <button type="button" title="Remove Hobby" onClick={() => fields.remove(index)}>-</button>
-          </InputField>
-          {/*Can add more fields here*/}
-        </div>
-      ))}
-    </div>
+    {fields.map((hobby, index) => (
+      <div key={hobby}>
+        <InputField
+          key={hobby}
+          form={form}
+          name={`${hobby}.description`}
+          validate={requiredStr}
+          label={`Hobby #${index + 1}`}
+        >
+          <button type="button" title="Remove Hobby" onClick={() => fields.remove(index)}>-</button>
+        </InputField>
+        {/*Can add more fields here*/}
+      </div>
+    ))}
   </fieldset>
 );
 
@@ -109,10 +105,10 @@ const submitTheValues = values => {
   if (!values.isAgreed && values.theNumber > 42) {
     throw new SubmissionError({
       theNumber: "You didn't agree to numbers greater than 42!!",
-      formError: "Soz the server said no. I hope the messages help."
+      formError: "Form not processed. Please make changes and try again."
     });
   }
-  alert("submit" + JSON.stringify(values));
+  alert("submit" + JSON.stringify(values, undefined, 2));
 };
 
 const initialValues = {
