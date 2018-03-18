@@ -1,5 +1,5 @@
 import React from 'react';
-import {Field, FieldArray, FormStatus, Formkit} from 'redux-formkit';
+import {Field, FieldArray, FormStatus, ValidationBlock, SubmissionError, Formkit} from 'redux-formkit';
 
 import './ExampleForm.css';
 
@@ -14,14 +14,14 @@ const ExampleForm = (props) => (
         <InputField
           label="First Field"
           name="field1"
-          onValidate={validateF2}
+          onChange={form => (form.getField('field2').revalidate())}
           form={props.form}
           validate={[requiredStr, maxLength5]}
         />
 
         <InputField label="2nd Field > 1st field" name="field2" form={props.form} validate={greaterThanField1}/>
         <div className="example-form_item_group">
-          <CheckboxField name="isAgreed" label="isAgreed" form={props.form} />
+          <CheckboxField name="isAgreed" label="Can the server have a number bigger than 42?" form={props.form} onChange={form => (form.getField('theNumber').revalidate())}/>
           <CheckboxField name="isAdditionalField" label="Is Additional Field?" form={props.form} />
           {  
             props.form.fieldValues().isAdditionalField 
@@ -54,13 +54,14 @@ const ExampleForm = (props) => (
         form={props.form}
         name="hobbies"
         component={renderHobbies}
-      />                
+      />
+      <FormErrorSection name="formError" form={props.form}/>
       <div className="example-form_item">
         <FormStatus form={props.form}>
           {({isValid, errorCount}) => {
             return(
               <button 
-                onClick={props.form.submit} 
+                onClick={props.form.handleSubmit} 
                 className={`example-form_button ${isValid? 'example-form_button-valid': ''}`} 
               >
                 Send {isValid? ':)': `(Todo: ${errorCount})`}
@@ -100,16 +101,17 @@ const renderHobbies = ({form, fields}) => (
 );
 
 
-const validateF2 = form => {
-  const field2 = form.getField('field2');
-  field2.validateValue(field2.props.value);
-};
-
 const greaterThanField1 = (value, values) => (
   values && value > values.field1? undefined: 'greaterThanField1'
 );
 
 const submitTheValues = values => {
+  if (!values.isAgreed && values.theNumber > 42) {
+    throw new SubmissionError({
+      theNumber: "You didn't agree to numbers greater than 42!!",
+      formError: "Soz the server said no. I hope the messages help."
+    });
+  }
   alert("submit" + JSON.stringify(values));
 };
 
@@ -125,7 +127,7 @@ const initialValues = {
 
 export default Formkit(ExampleForm, 'exampleF', {
   initialValues: initialValues,
-  submit: submitTheValues
+  onSubmit: submitTheValues
 });
 
 
@@ -162,6 +164,17 @@ const requiredNum = value => {
   return undefined;
 };
 
+
+const FormErrorSection = props => (
+  <ValidationBlock {...props} >
+    {({error}) => {
+      if (error) {
+        return <p>Errors: {error}</p>
+      };
+      return null;
+    }}
+  </ValidationBlock>
+);
 
 const Input = props => (
    <div className="example-form_item">
@@ -200,7 +213,7 @@ const RadioButton = props => {
 };
 
 const CheckboxField = props => (
-  <Field name={props.name} component={Checkbox} label={props.label} form={props.form} />
+  <Field component={Checkbox} {...props} />
 );
 
 const RadioField = props => (
