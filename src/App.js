@@ -8,12 +8,12 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h1 className="App-title">Example redux-toolkit form</h1>
+          <h1 className="App-title">Example Form using redux-formkit</h1>
         </header>
         <p className="App-intro">
           To get started, edit <code>src/components/ExampleForm.js</code> and save to reload.
         </p>
-        <ExampleForm status="abc"/>
+        <ExampleForm/>
       </div>
     );
   }
