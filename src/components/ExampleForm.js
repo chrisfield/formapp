@@ -5,7 +5,7 @@ import './ExampleForm.css';
 
 
 const ExampleForm = (props) => (
-  <form className="example-form">
+  <form className="example-form"> {/*No need for this to be a form. It can be a div/section etc */}
     <fieldset>
       <legend className="example-form_title">
         Example form
@@ -23,7 +23,7 @@ const ExampleForm = (props) => (
         <CheckboxField name="isAgreed" label="Can the server have a number bigger than 42?" form={props.form} onChange={form => (form.getField('theNumber').revalidate())}/>
         <CheckboxField name="isAdditionalField" label="Is Additional Field?" form={props.form} />
         {  
-          props.form.fieldValues().isAdditionalField 
+          props.form.props.fieldValues.isAdditionalField 
           && <Field component="input" name="additionalField" placeholder="Additional field" form={props.form}/>
         }
       </div>
@@ -57,13 +57,15 @@ const ExampleForm = (props) => (
     <FormErrorSection name="formError" form={props.form}/>
     <div className="example-form_item">
       <FormStatus form={props.form}>
-        {({isValid, errorCount}) => {
+        {({isValid, errorCount, isSubmitting}) => {
           return(
-            <button 
+            <button
+              type="button"
               onClick={props.form.handleSubmit} 
-              className={`example-form_button ${isValid? 'example-form_button-valid': ''}`} 
+              className={`example-form_button ${isValid? 'example-form_button-valid': ''}`}
+              disabled={isSubmitting}
             >
-              Send {isValid? ':)': `(Todo: ${errorCount})`}
+              Send {isValid? ':)': `(Todo: ${errorCount})`} Submitting: {isSubmitting + ''}
             </button>
           )
         }}
@@ -101,15 +103,24 @@ const greaterThanField1 = (value, values) => (
   values && value > values.field1? undefined: 'greaterThanField1'
 );
 
-const submitTheValues = values => {
-  if (!values.isAgreed && values.theNumber > 42) {
-    throw new SubmissionError({
-      theNumber: "You didn't agree to numbers greater than 42!!",
-      formError: "Form not processed. Please make changes and try again."
-    });
-  }
-  alert("submit" + JSON.stringify(values, undefined, 2));
-};
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+function submitAsynchronous(values) {
+  return sleep(1000).then(() => {                    // Simulate latency
+    if (!values.isAgreed && values.theNumber > 42) { // Simulate serverside validation
+      throw new SubmissionError({
+        theNumber: "You didn't agree to numbers greater than 42!!",
+        formError: "Form not processed. Please make changes and try again."
+      });
+    }
+    window.alert(`You submitted:${JSON.stringify(values, null, 2)}`)
+  });
+}
+
+function clearFormValues(form) {
+  form.props.updateFields({});
+}
+
 
 const initialValues = {
   hobbies: [
@@ -121,10 +132,13 @@ const initialValues = {
   rb2: 'G'
 };
 
-export default Formkit(ExampleForm, 'exampleF', {
+
+export default Formkit({
+  name: 'exampleF',
   initialValues: initialValues,
-  onSubmit: submitTheValues
-});
+  onSubmit: submitAsynchronous,
+  onSubmitSuccess: clearFormValues
+})(ExampleForm);
 
 
 
@@ -165,7 +179,7 @@ const FormErrorSection = props => (
   <ValidationBlock {...props} >
     {({error}) => {
       if (error) {
-        return <p>Errors: {error}</p>
+        return <p>{error}</p>
       };
       return null;
     }}
