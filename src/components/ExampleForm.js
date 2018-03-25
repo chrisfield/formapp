@@ -1,5 +1,6 @@
 import React from 'react';
 import {Field, FieldArray, FormStatus, ValidationBlock, SubmissionError, Formkit} from 'redux-formkit';
+import { connect } from 'react-redux';
 
 import './ExampleForm.css';
 
@@ -53,6 +54,7 @@ const ExampleForm = (props) => (
       form={props.form}
       name="hobbies"
       component={renderHobbies}
+      hobbies={props.hobbies}
     />
     <FormErrorSection name="formError" form={props.form}/>
     <div className="example-form_item">
@@ -75,12 +77,11 @@ const ExampleForm = (props) => (
 );
 
 
-const renderHobbies = ({form, fields}) => (
+const renderHobbies = ({form, fields, hobbies}) => (
   <fieldset>
     <legend className="example-form_title">
       Hobbies
     </legend>
-    <button type="button" onClick={() => fields.push()}>Add Hobby</button>
     {fields.map((hobby, index) => (
       <div key={hobby}>
         <InputField
@@ -92,11 +93,40 @@ const renderHobbies = ({form, fields}) => (
         >
           <button type="button" title="Remove Hobby" onClick={() => fields.remove(index)}>-</button>
         </InputField>
+        <FieldArray
+          form={form}
+          name={`${hobby}.equipment`}
+          component={renderEquipment}
+          hobbyName={hobbies[index]? hobbies[index].description: 'this Hobby'}
+        />
         {/*Can add more fields here*/}
       </div>
     ))}
+    <button type="button" onClick={() => fields.push()}>Add Hobby</button>
   </fieldset>
 );
+
+
+const renderEquipment = ({form, fields, hobbyName}) => (
+  <fieldset>
+    <legend className="example-form_title">
+      Equipment for {hobbyName}
+    </legend>
+    <button type="button" onClick={() => fields.push()}>Add Equipment</button>
+    {fields.map((equipment, index) => (
+      <InputField
+        key={equipment}
+        form={form}
+        name={`${equipment}`}
+        validate={requiredStr}
+        label={`Equipment #${index + 1}`}
+      >
+        <button type="button" title="Remove Equipment" onClick={() => fields.remove(index)}>-</button>
+      </InputField>
+    ))}
+  </fieldset>
+);
+
 
 
 const greaterThanField1 = (value, values) => (
@@ -124,7 +154,6 @@ function clearFormValues(form) {
 
 const initialValues = {
   hobbies: [
-    {},
     {description: 'stamp collecting'}
   ],
   theNumber: 42,
@@ -132,13 +161,20 @@ const initialValues = {
   rb2: 'G'
 };
 
+const mapStateToProps = (state) => {
+  return {
+    hobbies: state.form.exampleF? state.form.exampleF.values.hobbies: []
+  }
+};
 
-export default Formkit({
+
+/* This connect is not being used by redux-formkit but is there to show that you can connect to the store if you want */
+export default connect(mapStateToProps)(Formkit({
   name: 'exampleF',
   initialValues: initialValues,
   onSubmit: submitAsynchronous,
   onSubmitSuccess: clearFormValues
-})(ExampleForm);
+})(ExampleForm));
 
 
 
