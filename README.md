@@ -3,15 +3,15 @@
 
 ## Getting Started
 
-Clone this repo and from the root directory:
+Clone this repo and from the root directory. The examples runs with with [create-react-app](https://github.com/facebook/create-react-app). 
 
-To run [simple/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/simple/ExampleForm.js):
+### To run [simple/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/simple/ExampleForm.js):
 
 * `cd formapp/simple`
 * `npm install`
 * `npm start`
 
-The simple form includes:
+Simple form includes:
 * Text fields
 * Numeric field with formatting
 * Checkboxes
@@ -19,12 +19,12 @@ The simple form includes:
 * Syncronous submit
 
 
-To run [complex/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/complex/ExampleForm.js):
+### To run [complex/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/complex/ExampleForm.js):
 * `cd complex/simple`
 * `npm install`
 * `npm start`
 
-Additional features it includes are:
+Complex form includes:
 * Field-array with add/remove buttons
 * Setting initial values
 * Field and Inter-field valiation
@@ -36,5 +36,3 @@ Additional features it includes are:
 * Asynchronous validation with server-side messages displayed next to the relevant field
 * Flexible positioning of other server-side validation messages
 
-
-The examples runs with with [create-react-app](https://github.com/facebook/create-react-app). 
