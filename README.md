@@ -1,7 +1,23 @@
 # Example forms built with  [redux-formkit](https://github.com/chrisfield/redux-formkit)
 
-[ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/ExampleForm.js) includes:
 
+## Getting Started
+
+Clone this repo and from the root directory:
+
+To run [simple/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/simple/ExampleForm.js):
+
+`cd formapp/simple`
+`npm install`
+`npm start`
+
+
+To run [complex/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/complex/ExampleForm.js):
+`cd complex/simple`
+`npm install`
+`npm start`
+
+This form includes:
 * Text fields
 * Numeric field with formatting
 * Checkboxes
@@ -17,10 +33,4 @@
 * Flexible positioning of other server-side validation messages
 
 
-## Getting Started
-
-Clone this repo and from the root directory:
-* npm install
-* npm start
-
-It runs with with [create-react-app](https://github.com/facebook/create-react-app). 
+The examples runs with with [create-react-app](https://github.com/facebook/create-react-app). 
