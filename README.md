@@ -5,7 +5,7 @@
 
 Clone this repo and from the root directory. The examples runs with with [create-react-app](https://github.com/facebook/create-react-app). 
 
-### To run [simple/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/simple/ExampleForm.js):
+### To run [simple/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/simple/src/components/ExampleForm.js):
 
 * `cd formapp/simple`
 * `npm install`
@@ -19,7 +19,7 @@ Simple form includes:
 * Syncronous submit
 
 
-### To run [complex/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/complex/ExampleForm.js):
+### To run [complex/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/complex/src/components/ExampleForm.js):
 * `cd complex/simple`
 * `npm install`
 * `npm start`
