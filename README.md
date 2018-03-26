@@ -7,24 +7,28 @@ Clone this repo and from the root directory:
 
 To run [simple/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/simple/ExampleForm.js):
 
-`cd formapp/simple`
-`npm install`
-`npm start`
+* `cd formapp/simple`
+* `npm install`
+* `npm start`
 
-
-To run [complex/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/complex/ExampleForm.js):
-`cd complex/simple`
-`npm install`
-`npm start`
-
-This form includes:
+The simple form includes:
 * Text fields
 * Numeric field with formatting
 * Checkboxes
 * Radio buttons
+* Syncronous submit
+
+
+To run [complex/ExampleForm.js](https://github.com/chrisfield/formapp/blob/master/src/components/complex/ExampleForm.js):
+* `cd complex/simple`
+* `npm install`
+* `npm start`
+
+Additional features it includes are:
 * Field-array with add/remove buttons
 * Setting initial values
 * Field and Inter-field valiation
+* Conditional dynamic fields
 * Current error count
 * Submit button goes green when error count is zero
 * Asynchronous submit
