@@ -225,7 +225,8 @@ const FormErrorSection = props => (
 const Input = props => (
    <div className="example-form_item">
      <label htmlFor={props.name} className="example-form_field-label">{props.label}</label>
-     <input 
+     <input
+       ref={props.elementRef}
        id={props.name} 
        type={props.type? props.type: 'text'} 
        placeholder={props.placeholder} 
